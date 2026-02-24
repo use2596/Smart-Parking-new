@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Smart Parking System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="logo">
+                <i class="fas fa-parking"></i>
+                <h1>SmartPark</h1>
+                <p>Smart Parking Allocation System</p>
+                <div class="surveillance-badge">
+                    <i class="fas fa-video"></i> 24/7 Surveillance
+                </div>
+            </div>
+            <div class="login-form">
+                <h2>Welcome Back</h2>
+                <p>Access your parking dashboard</p>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Username / Roll Number">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password">
+                </div>
+                <div class="user-type">
+                    <label class="radio-label">
+                        <input type="radio" name="userType" value="student" checked>
+                        <span>Student</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="userType" value="faculty">
+                        <span>Faculty</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="userType" value="visitor">
+                        <span>Visitor</span>
+                    </label>
+                    <label class="radio-label admin-radio">
+                        <input type="radio" name="userType" value="admin">
+                        <span>Admin</span>
+                    </label>
+                </div>
+                <button onclick="login()" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Access Parking
+                </button>
+                <p class="demo-note">Demo: Use any username/password</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" class="screen">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="brand">
+                    <i class="fas fa-parking"></i>
+                    <span>SmartPark</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">2</span>
+                </div>
+                <div class="user-profile" onclick="toggleProfileMenu()">
+                    <img src="https://ui-avatars.com/api/?name=P+Lohitha+Sri&background=667eea&color=fff" alt="User">
+                    <span>P. Lohitha Sri</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="showSection('overview')">
+                    <i class="fas fa-th-large"></i>
+                    <span>Overview</span>
+                </li>
+                <li class="nav-item" onclick="showSection('zones')">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Parking Zones</span>
+                </li>
+                <li class="nav-item" onclick="showSection('bookings')">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>My Bookings</span>
+                </li>
+                <li class="nav-item" onclick="showSection('history')">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </li>
+                <li class="nav-item admin-only" onclick="showSection('admin')">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin Panel</span>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overviewSection" class="content-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-th-large"></i> Parking Overview</h2>
+                    <p class="current-time" id="currentTime"></p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card cars">
+                        <div class="stat-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Car Zone</h3>
+                            <p class="stat-number" id="carStats">12 / 50</p>
+                            <span class="stat-label">Available Spots</span>
+                        </div>
+                    </div>
+                    <div class="stat-card bikes">
+                        <div class="stat-icon">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Bike Zone</h3>
+                            <p class="stat-number" id="bikeStats">28 / 80</p>
+                            <span class="stat-label">Available Spots</span>
+                        </div>
+                    </div>
+                    <div class="stat-card bicycles">
+                        <div class="stat-icon">
+                            <i class="fas fa-bicycle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Bicycle Zone</h3>
+                            <p class="stat-number" id="bicycleStats">45 / 100</p>
+                            <span class="stat-label">Available Spots</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button onclick="showSection('zones'); selectZone('car')" class="action-btn">
+                            <i class="fas fa-car"></i>
+                            <span>Book Car Slot</span>
+                        </button>
+                        <button onclick="showSection('zones'); selectZone('bike')" class="action-btn">
+                            <i class="fas fa-motorcycle"></i>
+                            <span>Book Bike Slot</span>
+                        </button>
+                        <button onclick="showSection('zones'); selectZone('bicycle')" class="action-btn">
+                            <i class="fas fa-bicycle"></i>
+                            <span>Book Bicycle Slot</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="activityList">
+                        <!-- Activities will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Parking Zones Section -->
+            <section id="zonesSection" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-map-marker-alt"></i> Parking Zones</h2>
+                </div>
+
+                <!-- Zone Selector -->
+                <div class="zone-selector">
+                    <button class="zone-tab active" onclick="selectZone('car')" data-zone="car">
+                        <i class="fas fa-car"></i>
+                        <span>Car Zone</span>
+                    </button>
+                    <button class="zone-tab" onclick="selectZone('bike')" data-zone="bike">
+                        <i class="fas fa-motorcycle"></i>
+                        <span>Bike Zone</span>
+                    </button>
+                    <button class="zone-tab" onclick="selectZone('bicycle')" data-zone="bicycle">
+                        <i class="fas fa-bicycle"></i>
+                        <span>Bicycle Zone</span>
+                    </button>
+                </div>
+
+                <!-- Zone Info -->
+                <div class="zone-info" id="zoneInfo">
+                    <div class="zone-header">
+                        <h3 id="zoneTitle">Car Parking Zone A</h3>
+                        <div class="zone-status">
+                            <span class="status-badge available">12 Available</span>
+                            <span class="status-badge occupied">38 Occupied</span>
+                        </div>
+                    </div>
+                    <div class="zone-legend">
+                        <div class="legend-item">
+                            <span class="slot-dot available"></span>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="slot-dot occupied"></span>
+                            <span>Occupied</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="slot-dot selected"></span>
+                            <span>Selected</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="slot-dot reserved"></span>
+                            <span>Your Booking</span>
+                        </div>
+                        <div class="legend-item surveillance-legend">
+                            <i class="fas fa-video" style="color: #48bb78;"></i>
+                            <span>24/7 Surveillance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parking Grid -->
+                <div class="parking-grid-container">
+                    <div class="parking-grid" id="parkingGrid">
+                        <!-- Slots will be generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Booking Panel -->
+                <div class="booking-panel" id="bookingPanel">
+                    <h3><i class="fas fa-ticket-alt"></i> Book Your Slot</h3>
+                    <div class="pricing-info">
+                        <i class="fas fa-tag"></i>
+                        <span><strong>₹20 for 7 Hours</strong> - All Vehicle Types</span>
+                    </div>
+                    <div class="booking-form">
+                        <div class="form-group">
+                            <label>Selected Slot</label>
+                            <input type="text" id="selectedSlot" readonly placeholder="Select a slot">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Vehicle Number</label>
+                                <input type="text" id="vehicleNumber" placeholder="AP 12 AB 3456">
+                            </div>
+                            <div class="form-group">
+                                <label>Vehicle Type</label>
+                                <select id="vehicleType">
+                                    <option value="car">Car</option>
+                                    <option value="bike">Bike</option>
+                                    <option value="bicycle">Bicycle</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>From Time</label>
+                                <input type="time" id="fromTime">
+                            </div>
+                            <div class="form-group">
+                                <label>To Time</label>
+                                <input type="time" id="toTime">
+                            </div>
+                        </div>
+                        <div class="booking-summary">
+                            <div class="summary-row">
+                                <span>Duration:</span>
+                                <span id="duration">--</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Rate:</span>
+                                <span>₹20 for 7 hours</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Cost:</span>
+                                <span id="totalCost">₹0</span>
+                            </div>
+                        </div>
+                        <button onclick="bookSlot()" class="btn-primary btn-full">
+                            <i class="fas fa-check-circle"></i> Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Bookings Section -->
+            <section id="bookingsSection" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-ticket-alt"></i> My Bookings</h2>
+                </div>
+                <div class="bookings-list" id="bookingsList">
+                    <!-- Bookings will be populated by JS -->
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="historySection" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Parking History</h2>
+                </div>
+                <div class="history-list" id="historyList">
+                    <!-- History will be populated by JS -->
+                </div>
+            </section>
+
+            <!-- Admin Panel Section -->
+            <section id="adminSection" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> Admin Panel</h2>
+                </div>
+                
+                <!-- Location Configuration -->
+                <div class="location-config">
+                    <h3><i class="fas fa-map-marked-alt"></i> Parking Location Configuration</h3>
+                    <div class="config-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Location Name</label>
+                                <input type="text" id="locationName" placeholder="e.g., College Campus, Mall Parking, Office Complex">
+                            </div>
+                            <div class="form-group">
+                                <label>Pricing (₹ for 7 hours)</label>
+                                <input type="number" id="pricingAmount" value="20" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Surveillance Status</label>
+                            <div class="toggle-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="surveillanceEnabled" checked>
+                                    <span class="toggle-switch"></span>
+                                    <span class="toggle-text">24/7 CCTV Surveillance Enabled</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button onclick="saveLocationConfig()" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Configuration
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3><i class="fas fa-users"></i> Total Users</h3>
+                        <p class="admin-number">1,247</p>
+                    </div>
+                    <div class="admin-card">
+                        <h3><i class="fas fa-parking"></i> Active Bookings</h3>
+                        <p class="admin-number">89</p>
+                    </div>
+                    <div class="admin-card">
+                        <h3><i class="fas fa-rupee-sign"></i> Today's Revenue</h3>
+                        <p class="admin-number">₹2,450</p>
+                    </div>
+                    <div class="admin-card">
+                        <h3><i class="fas fa-video"></i> Surveillance</h3>
+                        <p class="admin-number active" id="surveillanceStatus">Active</p>
+                    </div>
+                </div>
+                <div class="admin-actions">
+                    <h3>Admin Actions</h3>
+                    <div class="admin-buttons">
+                        <button onclick="resetAllSlots()" class="admin-btn warning">
+                            <i class="fas fa-redo"></i> Reset All Slots
+                        </button>
+                        <button onclick="exportData()" class="admin-btn">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button onclick="addSlots()" class="admin-btn">
+                            <i class="fas fa-plus"></i> Add Slots
+                        </button>
+                        <button onclick="configurePricing()" class="admin-btn">
+                            <i class="fas fa-rupee-sign"></i> Configure Pricing
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Booking Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Booking Confirmed!</h2>
+            <p>Your parking slot has been reserved successfully.</p>
+            <div class="booking-details" id="bookingDetails">
+                <!-- Details will be populated by JS -->
+            </div>
+            <button onclick="closeModal()" class="btn-primary">Done</button>
+        </div>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
